@@ -1,8 +1,7 @@
 <template>
   <div>
-    order
     <order-header />
-    <router-view />
+    cart
     <nav-footer />
   </div>
 </template>

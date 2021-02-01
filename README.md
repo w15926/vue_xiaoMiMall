@@ -1,19 +1,6 @@
-# vue_xiao-mi-mall
+# vue全家桶小米商城
 
-## Project setup
+## 额外用到插件
 ```
-npm install
+npm i vue-lazyload element-ui node-sass sass-loader swiper@^5.3.6 vue-awesome-swiper vue-cookie --save-dev
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
