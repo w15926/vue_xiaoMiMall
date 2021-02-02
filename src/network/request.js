@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-import env from "@/env";
+// import env from "@/env";
 
 import NProgress from 'nprogress' // 导入 NProgress进度条和对应 css
 import 'nprogress/nprogress.css'
@@ -8,7 +8,7 @@ import 'nprogress/nprogress.css'
 axios.defaults.baseURL = '/api' // vue.config.js里使用里代理
 axios.defaults.timeout = 5000
 
-axios.defaults.baseURL = env.baseURL // 根据环境变量获取不同请求地址
+// axios.defaults.baseURL = env.baseURL // 根据环境变量获取不同请求地址
 
 axios.interceptors.request.use(config => {
   NProgress.start()
@@ -23,7 +23,7 @@ axios.interceptors.response.use(config => {
     NProgress.done()
     return res.data // 请求与响应拦截中必须把 config return出去
   } else if (res.status == 10) {
-    window.location.href = '/login' // 状态码返回 10跳回登陆页面，为 0正常
+    window.location.href = '/login' // 这个接口状态码返回 10跳回登陆页面，为 0正常
   } else {
     alert(res.msg)
   }
