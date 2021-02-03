@@ -162,7 +162,7 @@
 export default {
   data() {
     return {
-      username: '',
+      username: '板凳',
       phoneList: []
     }
   },
@@ -315,6 +315,7 @@ export default {
             box-shadow: 0 7px 6px 0 rgba($color: #000000, $alpha: 0.11);
             z-index: 10;
             transition: all 0.3s;
+            background-color: #fff;
 
             .product {
               position: relative;
