@@ -8,5 +8,28 @@
 /* 轮播图左箭头 */
 
 .el-carousel__arrow--left {
-  left: 21.5%;
+  left: 20%;
+}
+
+/* 轮播图两个箭头图标大小 */
+.el-carousel__arrow {
+  font-size: 30px;
+  opacity: .8;
+}
+
+/* 轮播图下方指示器整体 */
+
+.el-carousel__indicators {
+  left: 92%;
+  bottom: 1%;
+}
+
+/* 指示器的每个小圆点 */
+
+.el-carousel__button {
+  background-color: #f2f2f2;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid #666;
 }

@@ -4,13 +4,3 @@
   </div>
 </template>
 
-<script>
-export default {
-}
-</script>
-
-<style>
-@import './assets/scss/reset.scss';
-
-</style>
-

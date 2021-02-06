@@ -1,0 +1,70 @@
+.model {
+  @include position(fixed);
+  z-index: 9999;
+
+  transition: all 0.5s; // 使用 vue自带 transition动画
+
+  // 活跃状态（第一步（顺序不可乱））
+  &.slide-enter-active {
+    top: 0;
+  }
+
+  // 离开活跃状态（第二步（顺序不可乱））
+  &.slide-leave-active {
+    top: -100%;
+  }
+
+  // 初始状态（第三步（顺序不可乱））
+  &.slide-enter {
+    top: -100%;
+  }
+
+  // 遮罩层
+  .mask {
+    @include position(fixed);
+    background-color: $colorI;
+    opacity: 0.5;
+  }
+
+  // 会话框
+  .model-dialog {
+    @include position(absolute, 40%, 50%, 660px, auto);
+    background-color: $colorG;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+
+    // 会话框头部
+    .model-header {
+      height: 60px;
+      line-height: 60px;
+      background-color: $colorJ;
+      padding: 0 25px;
+      font-size: $fontI;
+
+      // 关闭图标
+      .icon-close {
+        @include positionImg(absolute, 23px, 25px, 14px, 14px, "/imgs/icon-close.png");
+        transition: all 0.3s;
+
+        &:hover {
+          transform: scale(1.5);
+          transition: all 0.3s;
+        }
+      }
+    }
+
+    // 会话框主体
+    .model-body {
+      padding: 42px 40px 54px;
+      font-size: 14px;
+    }
+
+    // 会话框底部
+    .model-footer {
+      height: 82px;
+      line-height: 82px;
+      text-align: center;
+      background-color: $colorJ;
+    }
+  }
+}
