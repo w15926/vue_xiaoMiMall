@@ -12,6 +12,7 @@
 }
 
 /* 轮播图两个箭头图标大小 */
+
 .el-carousel__arrow {
   font-size: 30px;
   opacity: .8;
@@ -32,4 +33,13 @@
   height: 11px;
   border-radius: 50%;
   border: 2px solid #666;
+}
+
+/* swiper轮播图分页器（指示器） */
+
+.swiper-pagination-bullet {
+  background-color: #333 !important;
+  border: 2px solid #fff;
+  width: 10px !important;
+  height: 10px !important;
 }

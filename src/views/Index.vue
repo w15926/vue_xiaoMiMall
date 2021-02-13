@@ -161,15 +161,7 @@ export default {
         {
           id: '46',
           img: '/imgs/slider/slide-3.jpg'
-        },
-        {
-          id: '',
-          img: '/imgs/slider/slide-4.jpg'
-        },
-        {
-          id: '',
-          img: '/imgs/slider/slide-5.jpg'
-        },
+        }
       ],
       menuList: [ // 轮播图展开菜单列表
         [
@@ -235,10 +227,15 @@ export default {
     },
     // 添加购物车
     addCart(itemId) {
-      return this.showModel = true
-      this.$axios.post('/carts', { product: itemId, slelected: true })
-        .then(res => console.log(res))
-        .catch(err => console.log(err))
+      this.$axios.post('/carts', { productId: itemId, selected: true })
+        .then(res => {
+          this.showModel = true
+          this.$store.dispatch('saveCartCount', res.cartTotalQuantity)
+        })
+        .catch(err => {
+          console.log(err)
+          return this.$router.push('/login')
+        })
     },
     // 跳转到购物车
     goToCart() {

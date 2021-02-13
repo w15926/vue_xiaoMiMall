@@ -16,10 +16,10 @@
           </h3>
 
           <div class="input">
-            <input type="text" placeholder="请输入账号" v-model="username">
+            <input type="text" placeholder="请输入账号（admin）" v-model="username">
           </div>
           <div class="input">
-            <input type="text" placeholder="请输入密码" v-model="password">
+            <input type="password" placeholder="请输入密码（admin）" v-model="password">
           </div>
 
           <div class="btn-box">
@@ -43,7 +43,7 @@
         <a href="https://weibo.com/xiaomishangcheng?is_all=1#_loginLayer_1612526540904">新浪微博</a><span>｜</span>
         <a href="https://www.mi.com/about/contact">联系我们</a>
       </div>
-      <p class="copyright">Copyright ©2020 mi.futurefe.com All Rights Reserved.</p>
+      <p class="copyright">Copyright ©2021 mi.futurefe.com All Rights Reserved.</p>
     </div>
 
   </div>
@@ -54,12 +54,23 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      userId: '',
     }
   },
   methods: {
     login() {
+      let { username, password } = this
+      this.$axios.post('user/login', { username, password })
+        .then(res => {
+          // main.js里导入插件设置cookie，（名字，值，生效时间） 
+          this.$cookie.set('userId', res.id, { expires: '1M' }) // 1M代表 1月，以此类推
 
+          this.$store.dispatch('saveUserName', res.username)
+
+          this.$router.push('/index')
+        })
+        .catch(err => console.log(err))
     },
     register() {
 
@@ -184,7 +195,7 @@ export default {
       }
     }
 
-    .copyright{
+    .copyright {
       margin-top: 10px;
     }
   }

@@ -21,11 +21,10 @@
         <!-- 底部 -->
         <div class="model-footer">
 
-          <!-- v-on:click   @:click -->
-          <a href="javascript:void(0);" class="btn" v-if="btnType == 1" v-on:click="$emit('submit')">
+          <a href="javascript:void(0);" class="btn" v-if="btnType == 1" @click="$emit('submit')">
             {{ sureText }}
           </a>
-          <a href="javascript:void(0);" class="btn" v-if="btnType == 2" v-on:click="$emit('cancel')">
+          <a href="javascript:void(0);" class="btn" v-if="btnType == 2" @click="$emit('cancel')">
             {{ cancelText }}
           </a>
 
