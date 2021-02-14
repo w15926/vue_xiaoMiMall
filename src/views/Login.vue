@@ -64,11 +64,20 @@ export default {
       this.$axios.post('user/login', { username, password })
         .then(res => {
           // main.js里导入插件设置cookie，（名字，值，生效时间） 
-          this.$cookie.set('userId', res.id, { expires: '1M' }) // 1M代表 1月，以此类推
+          this.$cookie.set('userId', res.id, { expires: 'Session' }) // 1M代表 1月，以此类推(Session关闭浏览器生效)
 
           this.$store.dispatch('saveUserName', res.username)
 
-          this.$router.push('/index')
+          // 只有路由从 login(name)跳转到 index(name)才生效（路由对应的是 name值不是路径）
+          // 对应 NavHeader的 mounted
+          this.$router.push({
+            name: 'index',
+            params: { from: 'login' }
+          })
+
+          // this.$router.push('/index')
+
+          this.$notify.success('登录成功')
         })
         .catch(err => console.log(err))
     },

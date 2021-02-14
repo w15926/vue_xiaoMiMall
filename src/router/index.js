@@ -7,7 +7,7 @@ const Home = () => import('@/views/Home')
 const Index = () => import('@/views/Index')
 const Product = () => import('@/views/Product')
 const Detail = () => import('@/views/Detail')
-const Login =() => import('@/views/Login')
+const Login = () => import('@/views/Login')
 const Cart = () => import('@/views/Cart')
 const Order = () => import('@/views/Order')
 const OrderList = () => import('@/views/OrderList')
@@ -20,12 +20,12 @@ const routes = [
   {
     path: '/home', component: Home, children:
       [
-        { path: '/index', component: Index },
+        { path: '/index', name: 'index', component: Index },
         { path: '/product/:id', component: Product },
         { path: '/detail/:id', component: Detail },
       ]
   },
-  { path: '/login', component: Login },
+  { path: '/login', name: 'login', component: Login },
   { path: '/cart', component: Cart },
   {
     path: '/order', component: Order, children:

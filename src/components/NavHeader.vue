@@ -16,6 +16,7 @@
         <div class="topbar-user">
           <a href="javascript:void(0);" v-if="username">{{ username || '' }}</a>
           <a href="javascript:void(0);" v-if="!username" @click="login">登录</a>
+          <a href="javascript:void(0);" v-if="username" @click="logout">退出</a>
           <a href="javascript:void(0);" v-if="username">我的订单</a>
           <a href="javascript:void(0);" class="my-cart" @click="goToCart">
             <span class="icon-cart"></span>
@@ -148,7 +149,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   data() {
@@ -157,6 +158,7 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.params && this.$route.params.from == 'login') this.getCartCount()
     this.getProductList()
   },
   methods: {
@@ -170,11 +172,27 @@ export default {
         .then(res => this.phoneList = res.list)
         .catch(err => console.log(err))
     },
+    // 登录用户
     login() {
       this.$router.push('/login')
     },
+    // 注销用户
+    logout() {
+      this.$axios.post('/user/logout')
+        .then(() => {
+          this.$notify.success('退出成功')
+          this.$cookie.set('userId', '', { expires: '-1' })
+          this.$store.dispatch('saveUserName', '')
+          this.$store.dispatch('saveCartCount', '0')
+        })
+    },
     goToCart() {
       this.$router.push('/cart')
+    },
+    getCartCount() {
+      this.$axios.get('/carts/products/sum').then((res = 0) => {
+        this.$store.dispatch('saveCartCount', res);
+      })
     }
   },
   computed: {
@@ -185,6 +203,7 @@ export default {
     //   return this.$store.state.cartCount
     // },
     ...mapState(['username', 'cartCount']) // 自动调用 vux里state
+    // ...mapActions(['']) // 以此类推调用 vuex
   }
 }
 </script>
