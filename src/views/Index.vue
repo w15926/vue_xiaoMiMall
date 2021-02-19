@@ -391,8 +391,11 @@ export default {
 
   // 产品
   .box {
-    width: 100%;
+    width: 100vw;
     background-color: $colorJ;
+    position: relative;
+    left: -7vw;
+    right: 0;
 
     .product-box {
       max-width: $min-width;

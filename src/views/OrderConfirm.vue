@@ -45,7 +45,8 @@
             <div class="addr-list clearfix">
 
               <!-- 地址信息 -->
-              <div class="addr-info" v-for="item in list" :key="item.index">
+              <div class="addr-info" v-for="(item, index) in list" :key="index" :class="{'checked':index == checkIndex}"
+                @click="checkIndex = index">
                 <h2>{{ item.receiverName }}</h2>
                 <div class="phone">{{ item.receiverMobile }}</div>
                 <div class="street">{{ `${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict}` }}</div>
@@ -53,13 +54,13 @@
                 <!-- 行为 -->
                 <div class="action">
                   <!-- 删除 -->
-                  <a href="javascript:void(0);" class="fl">
+                  <a href="javascript:void(0);" class="fl" @click="delAddress(item)">
                     <svg class="icon icon-del">
                       <use xlink:href="#icon-del"></use>
                     </svg>
                   </a>
                   <!-- 编辑 -->
-                  <a href="javascript:void(0);" class="fr">
+                  <a href="javascript:void(0);" class="fr" @click="editAddressModel(item)">
                     <svg class="icon icon-edit">
                       <use xlink:href="#icon-edit"></use>
                     </svg>
@@ -69,7 +70,7 @@
               </div>
 
               <!-- 添加地址 -->
-              <div class="addr-add">
+              <div class="addr-add" @click="openAddressModel">
                 <div class="icon-add"></div>
                 <div>添加新地址</div>
               </div>
@@ -138,23 +139,76 @@
           <!-- 按钮 -->
           <div class="btn-group">
             <a href="/cart" class="btn btn-default btn-large">返回购物车</a>
-            <a href="javascript:void(0);" class="btn btn-large">去结算</a>
+            <a href="javascript:void(0);" class="btn btn-large" @click="orderSubmit">去结算</a>
           </div>
 
         </div>
       </div>
     </div>
+
+    <!-- 添加信息弹框 -->
+    <model title="新增确认" btnType="1" :showModel="showEditModel" @cancel="showEditModel=false" @submit="submitAddress">
+      <template #body>
+        <div class="edit-wrap">
+          <div class="item">
+            <input type="text" class="input" placeholder="姓名" v-model="checkedItem.receiverName">
+            <input type="text" class="input" placeholder="手机号" v-model="checkedItem.receiverMobile">
+          </div>
+          <div class="item">
+            <select name="province" v-model="checkedItem.receiverProvince">
+              <option value="北京">北京</option>
+              <option value="江苏">江苏</option>
+              <option value="日本">日本</option>
+            </select>
+            <select name="city" v-model="checkedItem.receiverCity">
+              <option value="北京">北京</option>
+              <option value="南京">南京</option>
+              <option value="东京">东京</option>
+            </select>
+            <select name="district" v-model="checkedItem.receiverDistrict">
+              <option value="天安门">天安门</option>
+              <option value="秦淮区">秦淮区</option>
+              <option value="切腹县">切腹县</option>
+            </select>
+          </div>
+          <div class="item">
+            <textarea name="street" placeholder="详细地址" v-model="checkedItem.receiverAddress"></textarea>
+          </div>
+          <div class="item">
+            <input type="text" class="input" placeholder="邮编" v-model="checkedItem.receiverZip">
+          </div>
+        </div>
+      </template>
+    </model>
+
+    <!-- 删除弹框 -->
+    <model title="删除确认" btnType="1" :showModel="showDelModel" @cancel="showDelModel=false" @submit="submitAddress">
+      <template #body>
+        <p>您确认要删除此地址吗</p>
+      </template>
+    </model>
+
   </div>
 </template>
 
 <script>
+import Model from "@/components/Model";
+
 export default {
+  components: {
+    Model
+  },
   data() {
     return {
       list: [], // 收货地址列表
       cartList: [], // 购物车中需要结算的商品列表
       cartTotalPrice: 0, // 订单总金额
       count: 0, // 总件数
+      checkedItem: {}, // 选中的商品对象
+      userAction: '', // 用户行为 0:新增 1:编辑 2:删除
+      showDelModel: false, // 是否显示删除弹框
+      showEditModel: false, // 是否显示编辑弹框
+      checkIndex: 0, // 选中的地址
     }
   },
   mounted() {
@@ -175,12 +229,103 @@ export default {
         this.cartList.map(item => this.count += item.quantity)
       })
     },
+    // 提交地址（地址新增、编辑、删除）
+    submitAddress() {
+      let { checkedItem, userAction } = this
+      let method, url, params = {}
+
+      if (userAction == 0) {
+        method = 'post', url = '/shippings'
+      } else if (userAction == 1) {
+        method = 'put', url = `/shippings/${checkedItem.id}`
+      } else {
+        method = 'delete', url = `/shippings/${checkedItem.id}`
+      }
+
+      // 新增和编辑表单 axios需要提交 params
+      if (userAction == 0 || userAction == 1) {
+        let {
+          receiverName,
+          receiverMobile,
+          receiverProvince,
+          receiverCity,
+          receiverDistrict,
+          receiverAddress,
+          receiverZip
+        } = checkedItem
+
+        // 新增地址表单效验
+        if (!receiverName) return this.$notify.warning('请填写姓名')
+        if (!receiverMobile || !/\d{11}/.test(receiverMobile)) return this.$notify.warning('请检查11位手机号')
+        if (!receiverProvince) return this.$notify.warning('请选择省份')
+        if (!receiverCity) return this.$notify.warning('请选择城市')
+        if (!receiverDistrict) return this.$notify.warning('请选择地区/县')
+        if (!receiverAddress) return this.$notify.warning('请填写详细地址')
+        if (!/\d{6}/.test(receiverZip)) return this.$notify.warning('请填写6位邮编')
+
+        // params
+        params = {
+          receiverName,
+          receiverMobile,
+          receiverProvince,
+          receiverCity,
+          receiverDistrict,
+          receiverAddress,
+          receiverZip
+        }
+      }
+
+      this.$axios[method](url, params)
+        .then(() => {
+          this.closeModel()
+          this.getAddressList()
+          this.$notify.success('操作成功')
+        })
+    },
+    // 关闭弹窗执行事件
+    closeModel() {
+      this.checkedItem = {}
+      this.userAction = ''
+      this.showDelModel = false
+      this.showEditModel = false
+    },
+    // 新增地址弹窗
+    openAddressModel() {
+      this.checkedItem = {}
+      this.userAction = 0
+      this.showEditModel = true
+    },
+    // 编辑地址弹窗
+    editAddressModel(item) {
+      this.checkedItem = item
+      this.userAction = 1
+      this.showEditModel = true
+    },
+    // 删除地址按钮
+    delAddress(item) {
+      this.checkedItem = item
+      this.userAction = 2
+      this.showDelModel = true
+    },
+    // 订单提交
+    orderSubmit() {
+      let item = this.list[this.checkIndex]
+      if (!item) return this.$notify.error('请选择地址')
+
+      this.$axios.post('/orders', { shippingId: item.id })
+        // .then(res => this.$router.push({
+        //   path: '/order/pay',
+        //   query: { orderNo:res.orderNo }
+        // }))
+        .then(res => this.$router.push(`/order/pay?orderNo=${res.orderNo}`))
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .order-confirm {
+  // 主体
   .wrapper {
     background-color: #f5f5f5;
     padding-top: 30px;
@@ -210,10 +355,20 @@ export default {
             width: 271px;
             height: 180px;
             border: 1px solid #e5e5e5;
-            margin-right: 15px;
+            margin: 0 15px 15px 0;
             padding: 15px 24px;
             font-size: 14px;
             color: #757575;
+
+            &.addr-info:last-child,
+            &.addr-add:last-child {
+              margin: 0;
+            }
+
+            &.addr-info:nth-child(4n),
+            &.addr-add:nth-child(4n) {
+              margin-right: 0;
+            }
           }
 
           .addr-info {
@@ -246,10 +401,10 @@ export default {
                 fill: #ff6700;
               }
             }
-          }
 
-          &.checked {
-            border: 1px solid #ff6700;
+            &.checked {
+              border: 1px solid #ff6700;
+            }
           }
         }
 
@@ -270,102 +425,148 @@ export default {
           }
         }
       }
-    }
 
-    // 商品
-    .item-goods {
-      margin-top: 34px;
-      border-bottom: 1px solid #e5e5e5;
-      padding-bottom: 5px;
-
-      h2 {
+      // 商品
+      .item-goods {
+        margin-top: 34px;
         border-bottom: 1px solid #e5e5e5;
         padding-bottom: 5px;
-      }
 
-      li {
-        display: flex;
-        align-items: center;
-        height: 40px;
-        line-height: 40px;
-        margin-top: 10px;
-        font-size: 16px;
-        color: #333;
+        h2 {
+          border-bottom: 1px solid #e5e5e5;
+          padding-bottom: 5px;
+        }
 
-        // 名字
-        .goods-name {
-          flex: 5;
+        li {
+          display: flex;
+          align-items: center;
+          height: 40px;
+          line-height: 40px;
+          margin-top: 10px;
+          font-size: 16px;
+          color: #333;
 
-          img {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            border-radius: 10%;
-            margin-right: 10px;
+          // 名字
+          .goods-name {
+            flex: 5;
+
+            img {
+              width: 30px;
+              height: 30px;
+              vertical-align: middle;
+              border-radius: 10%;
+              margin-right: 10px;
+            }
+          }
+
+          // 价格
+          .goods-price {
+            flex: 2;
+          }
+
+          // 总价
+          .goods-total {
+            padding-right: 44px;
+            color: #ff6600;
           }
         }
-
-        // 价格
-        .goods-price {
-          flex: 2;
-        }
-
-        // 总价
-        .goods-total {
-          padding-right: 44px;
-          color: #ff6600;
-        }
-      }
-    }
-
-    // 商品运输 && 商品发票
-    .item-shipping,
-    .item-invoice {
-      margin-top: 31px;
-      line-height: 20px;
-
-      h2 {
-        display: inline-block;
-        margin-right: 71px;
-        font-size: 20px;
-        width: 80px;
       }
 
-      span,
-      a {
+      // 商品运输 && 商品发票
+      .item-shipping,
+      .item-invoice {
+        margin-top: 31px;
+        line-height: 20px;
+
+        h2 {
+          display: inline-block;
+          margin-right: 71px;
+          font-size: 20px;
+          width: 80px;
+        }
+
+        span,
+        a {
+          font-size: 16px;
+          color: #ff6700;
+          margin-right: 23px;
+        }
+      }
+
+      // 详情
+      .detail {
+        padding: 50px 44px 33px 0;
+        border-bottom: 1px solid #f5f5f5;
+        text-align: right;
         font-size: 16px;
-        color: #ff6700;
-        margin-right: 23px;
-      }
-    }
+        color: #666;
 
-    // 详情
-    .detail {
-      padding: 50px 44px 33px 0;
-      border-bottom: 1px solid #f5f5f5;
-      text-align: right;
-      font-size: 16px;
-      color: #666;
-
-      .item-val {
-        color: #ff6700;
-      }
-
-      .item {
-        line-height: 15px;
-        margin-bottom: 12px;
-      }
-
-      .item-total {
         .item-val {
-          font-size: 28px;
+          color: #ff6700;
+        }
+
+        .item {
+          line-height: 15px;
+          margin-bottom: 12px;
+        }
+
+        .item-total {
+          .item-val {
+            font-size: 28px;
+          }
         }
       }
-    }
 
-    .btn-group {
-      margin-top: 37px;
-      text-align: right;
+      .btn-group {
+        margin-top: 37px;
+        text-align: right;
+      }
+    }
+  }
+
+  // 弹框
+  .edit-wrap {
+    font-size: 14px;
+
+    .item {
+      margin-bottom: 15px;
+
+      .input {
+        display: inline-block;
+        width: 283px;
+        height: 40px;
+        line-height: 40px;
+        box-sizing: border-box;
+        padding-left: 15px;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+
+        & + .input {
+          margin-left: 14px;
+        }
+      }
+
+      // 街道
+      select {
+        width: 100px;
+        height: 40px;
+        line-height: 40px;
+        text-indent: 1rem;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        margin-right: 15px;
+      }
+
+      // 详细地址
+      textarea {
+        width: 100%;
+        height: 62px;
+        padding: 1rem;
+        resize: none;
+        box-sizing: border-box;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+      }
     }
   }
 }

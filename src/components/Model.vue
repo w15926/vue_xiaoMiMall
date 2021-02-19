@@ -29,8 +29,8 @@
           </a>
 
           <div class="btn-group" v-if="btnType == 3">
-            <a href="javascript:void(0);" class="btn" v-on:click="$emit('submit')">确定</a>
-            <a href="javascript:void(0);" class="btn btn-default" v-on:click="$emit('cancel')">取消</a>
+            <a href="javascript:void(0);" class="btn" v-on:click="$emit('submit')">{{ sureText }}</a>
+            <a href="javascript:void(0);" class="btn btn-default" v-on:click="$emit('cancel')">{{ cancelText }}</a>
           </div>
 
         </div>

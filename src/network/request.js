@@ -32,6 +32,10 @@ axios.interceptors.response.use(config => {
     console.log(res.msg)
     return Promise.reject(res)
   }
+}, err => {
+  let res = err.response
+  console.log(res)
+  return Promise.reject(res)
 })
 
 Vue.prototype.$axios = axios

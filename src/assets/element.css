@@ -35,6 +35,16 @@
   border: 2px solid #666;
 }
 
+/* 分页器 */
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background-color: #ff6600;
+}
+
+/* 分页器 hover */
+.el-pagination.is-background .el-pager li:not(.disabled):hover{
+  color: #ff6600;
+}
+
 /* swiper轮播图分页器（指示器） */
 
 .swiper-pagination-bullet {

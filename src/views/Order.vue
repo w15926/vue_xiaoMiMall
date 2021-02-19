@@ -23,14 +23,17 @@ export default {
     ServiceBar,
     NavFooter
   },
-  created() {
-    this.getHeaderInfo()
-  },
   data() {
     return {
-      title: '订单',
-      tip: ''
+      title: '订单支付',
+      tip: '谨防钓鱼诈骗'
     }
+  },
+  mounted() {
+    this.getHeaderInfo()
+  },
+  updated() {
+    this.getHeaderInfo()
   },
   methods: {
     getHeaderInfo() {
@@ -42,7 +45,7 @@ export default {
           this.tip = '请认真填写收获地址'
           break;
         case '/order/list':
-          this.title = '订单确认'
+          this.title = '订单列表'
           this.tip = '请谨慎防钓鱼链接或诈骗电话'
           break;
         case '/order/pay':

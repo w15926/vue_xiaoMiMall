@@ -17,7 +17,7 @@
           <a href="javascript:void(0);" v-if="username">{{ username || '' }}</a>
           <a href="javascript:void(0);" v-if="!username" @click="login">登录</a>
           <a href="javascript:void(0);" v-if="username" @click="logout">退出</a>
-          <a href="javascript:void(0);" v-if="username">我的订单</a>
+          <a href="/order/list" target="_blank" v-if="username">我的订单</a>
           <a href="javascript:void(0);" class="my-cart" @click="goToCart">
             <span class="icon-cart"></span>
             购物车 ({{ cartCount }})
@@ -150,7 +150,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-
 export default {
   data() {
     return {
@@ -212,39 +211,32 @@ export default {
 @import "@/assets/scss/base.scss";
 @import "@/assets/scss/mixin.scss";
 @import "@/assets/scss/config.scss";
-
 .header {
   .nav-topbar {
     height: 39px;
     line-height: 39px;
     background-color: #333;
     color: #b0b0b0;
-
     .container {
       @include flex();
-
       a {
         display: inline-block;
         color: #b0b0b0;
       }
-
       .topbar-menu {
         a {
           margin-right: 17px;
         }
       }
-
       .topbar-user {
         a {
           margin-left: 17px;
         }
-
         .my-cart {
           width: 110px;
           background-color: $colorA;
           color: #fff;
           text-align: center;
-
           .icon-cart {
             @include bgImg(16px, 12px, "/imgs/icon-cart-checked.png");
           }
@@ -252,18 +244,15 @@ export default {
       }
     }
   }
-
   .nav-header {
     .container {
       position: relative;
       height: 112px;
       @include flex();
-
       .header-menu {
         display: inline-block;
         width: 643px;
         padding-left: 209px;
-
         .item-menu {
           display: inline-block;
           color: #333;
@@ -271,21 +260,17 @@ export default {
           font-size: 16px;
           line-height: 112px;
           margin-right: 20px;
-
           span {
             cursor: pointer;
           }
-
           &:hover {
             color: $colorA;
-
             .children {
               height: 220px;
               opacity: 1;
               transition: all 0.3s;
             }
           }
-
           .children {
             position: absolute;
             top: 112px;
@@ -299,7 +284,6 @@ export default {
             z-index: 9999;
             transition: all 0.3s;
             background-color: #fff;
-
             .product {
               position: relative;
               float: left;
@@ -308,32 +292,26 @@ export default {
               font-size: 12px;
               line-height: 12px;
               text-align: center;
-
               a {
                 display: inline-block;
               }
-
               img {
                 width: auto;
                 height: 111px;
                 margin-top: 26px;
               }
-
               .pro-img {
                 height: 137px;
               }
-
               .pro-name {
                 font-weight: bold;
                 margin-top: 19px;
                 margin-bottom: 8px;
                 color: $colorB;
               }
-
               .pro-price {
                 color: $colorA;
               }
-
               &:before {
                 content: " ";
                 position: absolute;
@@ -343,7 +321,6 @@ export default {
                 height: 100px;
                 width: 1px;
               }
-
               &:last-child::before {
                 display: none;
               }
@@ -351,16 +328,13 @@ export default {
           }
         }
       }
-
       .header-search {
         width: 319px;
-
         .wrapper {
           height: 50px;
           border: 1px solid #e0e0e0;
           display: flex;
           align-items: center;
-
           input {
             border: none;
             box-sizing: border-box;
@@ -369,7 +343,6 @@ export default {
             height: 50px;
             padding-left: 14px;
           }
-
           a {
             @include bgImg(18px, 18px, "/imgs/icon-search.png");
             margin: auto;

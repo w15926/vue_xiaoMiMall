@@ -1,6 +1,6 @@
 .model {
   @include position(fixed);
-  z-index: 9999;
+  z-index: 10;
 
   transition: all 0.5s; // 使用 vue自带 transition动画
 

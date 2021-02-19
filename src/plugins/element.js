@@ -5,10 +5,12 @@ import {
   Carousel,
   CarouselItem,
   Notification,
-  Message
+  Message,
+  Pagination,
 } from 'element-ui';
 
 Vue.use(Carousel)
 Vue.use(CarouselItem)
+Vue.use(Pagination)
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
